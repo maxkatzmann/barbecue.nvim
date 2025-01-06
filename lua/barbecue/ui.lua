@@ -196,7 +196,10 @@ function M.update(winnr)
   end
 
   if not visible then
-    vim.wo[winnr].winbar = ""
+    -- Do not adjust winbar
+    -- vim.wo[winnr].winbar = ""
+    -- Instead adjust the breadcrumbs variable.
+    vim.g.barbecue_breadcrumbs = ""
     return
   end
 
