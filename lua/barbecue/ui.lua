@@ -224,8 +224,12 @@ function M.update(winnr)
     if entries == nil then return end
 
     state:save(entries)
-    vim.wo[winnr].winbar =
+    local winbar_content =
       build_winbar(entries, lead_custom_section, custom_section)
+    -- Do NOT write the content to the winbar...
+    -- vim.wo[winnr].winbar = winbar_content
+    -- Instead, write it to a variable so that we can read it (e.g., in lualine) later.
+    vim.g.barbecue_breadcrumbs = winbar_content
   end)
 end
 
