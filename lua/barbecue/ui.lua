@@ -195,11 +195,18 @@ function M.update(winnr)
     return
   end
 
+  if vim.g.barbecue_breadcrumbs == nil then vim.g.barbecue_breadcrumbs = {} end
+
+  local update_breadcrumbs = function(winnr, winbar_content)
+    -- The hack with the temporary variable is necessary
+    -- because of: https://github.com/nanotee/nvim-lua-guide?tab=readme-ov-file#caveats-3
+    local tmp_breadcrums = vim.g.barbecue_breadcrumbs
+    tmp_breadcrums[winnr] = winbar_content
+    vim.g.barbecue_breadcrumbs = tmp_breadcrums
+  end
+
   if not visible then
-    -- Do not adjust winbar
-    -- vim.wo[winnr].winbar = ""
-    -- Instead adjust the breadcrumbs variable.
-    vim.g.barbecue_breadcrumbs = ""
+    update_breadcrumbs(winnr, "")
     return
   end
 
@@ -229,10 +236,7 @@ function M.update(winnr)
     state:save(entries)
     local winbar_content =
       build_winbar(entries, lead_custom_section, custom_section)
-    -- Do NOT write the content to the winbar...
-    -- vim.wo[winnr].winbar = winbar_content
-    -- Instead, write it to a variable so that we can read it (e.g., in lualine) later.
-    vim.g.barbecue_breadcrumbs = winbar_content
+    update_breadcrumbs(winnr, winbar_content)
   end)
 end
 
